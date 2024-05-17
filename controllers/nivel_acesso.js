@@ -5,16 +5,16 @@ module.exports = {
     async listar(request, response) {
         try {
             // instruções SQL
-            const sql = `select user_id, user_nome, user_senha, user_email, user_tel, nivel_id, user_priorid from usuario;`; 
+            const sql = `select nivel_id, nivel_acesso, nivel_descricao from nivel_acesso;`; 
 
             //executa instruções SQL e armazena o resultado na variável usuários
-            const usuarios = await db.query(sql); 
-            const nItens = usuarios[0].length;
+            const nivel = await db.query(sql); 
+            const nItens = nivel[0].length;
 
             return response.status(200).json({
                 sucesso: true, 
-                mensagem: 'Lista de usuários.', 
-                dados: usuarios[0], 
+                mensagem: 'Niveis de acesso.', 
+                dados: nivel[0], 
                 nItens                 
             });
 
@@ -31,26 +31,24 @@ module.exports = {
     async cadastrar(request, response) {
         try {
             // parâmetros recebidos no corpo da requisição
-            const { user_nome, user_senha, user_email, user_tel, nivel_id, user_priorid } = request.body;
+            const { nivel_acesso, nivel_descricao } = request.body;
 
             // instrução SQL
-            const sql = `INSERT INTO usuario
-                (user_nome, user_senha, user_email, user_tel, nivel_id, user_priorid) 
-                VALUES (?, ?, ?, ?, ?, ?)`;
+            const sql = `INSERT INTO nivel_acesso (nivel_acesso, nivel_descricao) VALUES (?, ?)`;
 
             // definição dos dados a serem inseridos em um array
-            const values = [user_nome, user_senha, user_email, user_tel, nivel_id, user_priorid];  
+            const values = [nivel_acesso, nivel_descricao];  
 
             // execução da instrução sql passando os parâmetros
             const execSql = await db.query(sql, values); 
 
-            // identificação do ID do registro inserido
-            const usu_id = execSql[0].insertId;           
+            //identificação do ID do registro inserido
+            const nivel_id = execSql[0].insertId;           
 
             return response.status(200).json({
                 sucesso: true, 
-                mensagem: 'Cadastro de usuário efetuado com sucesso.', 
-                dados: usu_id
+                mensagem: 'Nivel de acesso cadastrado com sucesso.', 
+                dados: nivel_id
             });
         } catch (error) {
             return response.status(500).json({
@@ -64,25 +62,23 @@ module.exports = {
     async editar(request, response) {
         try {
             // parâmetros recebidos pelo corpo da requisição
-            const { user_nome, user_senha, user_email, user_tel, nivel_id, user_priorid } = request.body;
+            const { nivel_acesso, nivel_descricao } = request.body;
 
             // parâmetro recebido pela URL via params ex: /usuario/1
-            const { user_id } = request.params; 
+            const { nivel_id } = request.params; 
 
             // instruções SQL
-            const sql = `UPDATE usuario SET user_nome = ?, user_senha = ?,
-            user_email = ?, user_tel = ?, nivel_id = ?, user_priorid = ?
-            WHERE user_id = ?;`; 
+            const sql = `UPDATE nivel_acesso SET nivel_acesso = ?, nivel_descricao = ? WHERE nivel_id = ?;`; 
 
             // preparo do array com dados que serão atualizados
-            const values = [user_nome, user_senha, user_email, user_tel, nivel_id, user_priorid, user_id]; 
+            const values = [nivel_acesso, nivel_descricao, nivel_id]; 
 
             // execução e obtenção de confirmação da atualização realizada
             const atualizaDados = await db.query(sql, values); 
             
             return response.status(200).json({
                 sucesso: true, 
-                mensagem: `Usuário ${user_id} atualizado com sucesso!`, 
+                mensagem: `Nivel de acesso ${nivel_id} atualizado com sucesso!`, 
                 dados: atualizaDados[0].affectedRows 
             });
 
@@ -98,20 +94,20 @@ module.exports = {
     async apagar(request, response) {
         try {
             // parâmetro passado via url na chamada da api pelo front-end
-            const { user_id } = request.params;
+            const { nivel_id } = request.params;
 
             // comando de exclusão
-            const sql = `DELETE FROM usuario WHERE user_id = ?;`;
+            const sql = `DELETE FROM nivel_acesso WHERE nivel_id = ?;`;
 
             // array com parâmetros da exclusão
-            const values = [user_id];
+            const values = [nivel_id];
 
             // executa instrução no banco de dados
             const excluir = await db.query(sql, values);
 
             return response.status(200).json({
                 sucesso: true,
-                mensagem: `Usuário ${user_id} excluído com sucesso`,
+                mensagem: `Nivel de acesso ${nivel_id} excluído com sucesso`,
                 dados: excluir[0].affectedRows
             });
         } catch (error) {

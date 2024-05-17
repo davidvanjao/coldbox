@@ -5,16 +5,16 @@ module.exports = {
     async listar(request, response) {
         try {
             // instruções SQL
-            const sql = `select user_id, user_nome, user_senha, user_email, user_tel, nivel_id, user_priorid from usuario;`; 
+            const sql = `select alerta_id, alerta_tipo, alerta_descri from alerta;`; 
 
             //executa instruções SQL e armazena o resultado na variável usuários
-            const usuarios = await db.query(sql); 
-            const nItens = usuarios[0].length;
+            const alerta = await db.query(sql); 
+            const nItens = alerta[0].length;
 
             return response.status(200).json({
                 sucesso: true, 
-                mensagem: 'Lista de usuários.', 
-                dados: usuarios[0], 
+                mensagem: 'Alertas.', 
+                dados: alerta[0], 
                 nItens                 
             });
 
@@ -31,26 +31,24 @@ module.exports = {
     async cadastrar(request, response) {
         try {
             // parâmetros recebidos no corpo da requisição
-            const { user_nome, user_senha, user_email, user_tel, nivel_id, user_priorid } = request.body;
+            const { alerta_tipo, alerta_descri } = request.body;
 
             // instrução SQL
-            const sql = `INSERT INTO usuario
-                (user_nome, user_senha, user_email, user_tel, nivel_id, user_priorid) 
-                VALUES (?, ?, ?, ?, ?, ?)`;
+            const sql = `INSERT INTO alerta (alerta_tipo, alerta_descri) VALUES (?, ?)`;
 
             // definição dos dados a serem inseridos em um array
-            const values = [user_nome, user_senha, user_email, user_tel, nivel_id, user_priorid];  
+            const values = [alerta_tipo, alerta_descri];  
 
             // execução da instrução sql passando os parâmetros
             const execSql = await db.query(sql, values); 
 
-            // identificação do ID do registro inserido
-            const usu_id = execSql[0].insertId;           
+            //identificação do ID do registro inserido
+            const alerta_id = execSql[0].insertId;           
 
             return response.status(200).json({
                 sucesso: true, 
-                mensagem: 'Cadastro de usuário efetuado com sucesso.', 
-                dados: usu_id
+                mensagem: 'Alerta cadastrado com sucesso.', 
+                dados: alerta_id
             });
         } catch (error) {
             return response.status(500).json({
@@ -64,25 +62,23 @@ module.exports = {
     async editar(request, response) {
         try {
             // parâmetros recebidos pelo corpo da requisição
-            const { user_nome, user_senha, user_email, user_tel, nivel_id, user_priorid } = request.body;
+            const { alerta_tipo, alerta_descri } = request.body;
 
             // parâmetro recebido pela URL via params ex: /usuario/1
-            const { user_id } = request.params; 
+            const { alerta_id } = request.params; 
 
             // instruções SQL
-            const sql = `UPDATE usuario SET user_nome = ?, user_senha = ?,
-            user_email = ?, user_tel = ?, nivel_id = ?, user_priorid = ?
-            WHERE user_id = ?;`; 
+            const sql = `UPDATE alerta SET alerta_tipo = ?, alerta_descri = ? WHERE alerta_id = ?;`; 
 
             // preparo do array com dados que serão atualizados
-            const values = [user_nome, user_senha, user_email, user_tel, nivel_id, user_priorid, user_id]; 
+            const values = [alerta_tipo, alerta_descri, alerta_id]; 
 
             // execução e obtenção de confirmação da atualização realizada
             const atualizaDados = await db.query(sql, values); 
             
             return response.status(200).json({
                 sucesso: true, 
-                mensagem: `Usuário ${user_id} atualizado com sucesso!`, 
+                mensagem: `Alerta ${alerta_id} atualizado com sucesso!`, 
                 dados: atualizaDados[0].affectedRows 
             });
 
@@ -98,20 +94,20 @@ module.exports = {
     async apagar(request, response) {
         try {
             // parâmetro passado via url na chamada da api pelo front-end
-            const { user_id } = request.params;
+            const { alerta_id } = request.params;
 
             // comando de exclusão
-            const sql = `DELETE FROM usuario WHERE user_id = ?;`;
+            const sql = `DELETE FROM alerta WHERE alerta_id = ?;`;
 
             // array com parâmetros da exclusão
-            const values = [user_id];
+            const values = [alerta_id];
 
             // executa instrução no banco de dados
             const excluir = await db.query(sql, values);
 
             return response.status(200).json({
                 sucesso: true,
-                mensagem: `Usuário ${user_id} excluído com sucesso`,
+                mensagem: `Alerta ${alerta_id} excluído com sucesso`,
                 dados: excluir[0].affectedRows
             });
         } catch (error) {
