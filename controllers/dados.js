@@ -34,5 +34,36 @@ module.exports = {
             });
         }
     },
+
+    async cadastrar(request, response) {
+        try {
+            // parâmetros recebidos no corpo da requisição
+            const { equip_id, dados_temp, dados_umid, dados_data } = request.body;
+
+            // instrução SQL
+            const sql = `INSERT INTO dados (equip_id, dados_temp, dados_umid, dados_data) VALUES (?, ?, ?, ?)`;
+
+            // definição dos dados a serem inseridos em um array
+            const values = [equip_id, dados_temp, dados_umid, dados_data];  
+
+            // execução da instrução sql passando os parâmetros
+            const execSql = await db.query(sql, values); 
+
+            //identificação do ID do registro inserido
+            const dados_id = execSql[0].insertId;           
+
+            return response.status(200).json({
+                sucesso: true, 
+                mensagem: 'Dados cadastrado com sucesso.', 
+                dados: alerta_id
+            });
+        } catch (error) {
+            return response.status(500).json({
+                sucesso: false, 
+                mensagem: 'Erro na requisição.', 
+                dados: error.message
+            });
+        }
+    },
 }
 

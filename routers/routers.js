@@ -19,6 +19,7 @@ router.patch('/nivel_acesso/:nivel_id', NivelAcessoController.editar);
 router.delete('/nivel_acesso/:nivel_id', NivelAcessoController.apagar); 
 
 router.get('/dados', DadosController.listar); 
+router.post('/dados', DadosController.cadastrar); 
 //COLOCAR O CADASTRAR
 
 router.get('/alerta', AlertaController.listar); 
