@@ -7,6 +7,7 @@ const NivelAcessoController = require('../controllers/nivel_acesso');
 const DadosController = require('../controllers/dados'); 
 const AlertaController = require('../controllers/alerta'); 
 const LogsController = require('../controllers/logs'); 
+const LocalizacaoController = require('../controllers/localizacao'); 
 
 router.get('/usuarios', UsuariosController.listar); 
 router.post('/usuarios', UsuariosController.cadastrar); 
@@ -20,7 +21,6 @@ router.delete('/nivel_acesso/:nivel_id', NivelAcessoController.apagar);
 
 router.get('/dados', DadosController.listar); 
 router.post('/dados', DadosController.cadastrar); 
-//COLOCAR O CADASTRAR
 
 router.get('/alerta', AlertaController.listar); 
 router.post('/alerta', AlertaController.cadastrar); 
@@ -30,5 +30,10 @@ router.delete('/alerta/:alerta_id', AlertaController.apagar);
 router.get('/logs', LogsController.listar); 
 router.post('/logs', LogsController.cadastrar); 
 router.patch('/logs/:logs_id', LogsController.editar); 
+
+router.get('/localizacao', LocalizacaoController.listar); 
+router.post('/localizacao', LocalizacaoController.cadastrar); 
+router.patch('/localizacao/:loc_id', LocalizacaoController.editar); 
+router.delete('/localizacao/:loc_id', LocalizacaoController.apagar); 
 
 module.exports = router;

@@ -38,7 +38,7 @@ module.exports = {
     async cadastrar(request, response) {
         try {
             // parâmetros recebidos no corpo da requisição
-            const { equip_id, dados_temp, dados_umid, dados_data } = request.body;
+            const { equip_id, dados_temp, dados_umid, dados_data} = request.body;
 
             // instrução SQL
             const sql = `INSERT INTO dados (equip_id, dados_temp, dados_umid, dados_data) VALUES (?, ?, ?, ?)`;
@@ -55,7 +55,7 @@ module.exports = {
             return response.status(200).json({
                 sucesso: true, 
                 mensagem: 'Dados cadastrado com sucesso.', 
-                dados: alerta_id
+                dados: dados_id
             });
         } catch (error) {
             return response.status(500).json({
