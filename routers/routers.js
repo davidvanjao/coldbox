@@ -8,6 +8,8 @@ const DadosController = require('../controllers/dados');
 const AlertaController = require('../controllers/alerta'); 
 const LogsController = require('../controllers/logs'); 
 const LocalizacaoController = require('../controllers/localizacao'); 
+const EquipamentoController = require('../controllers/equipamento'); 
+const ParametroController = require('../controllers/parametro'); 
 
 router.get('/usuarios', UsuariosController.listar); 
 router.post('/usuarios', UsuariosController.cadastrar); 
@@ -35,5 +37,17 @@ router.get('/localizacao', LocalizacaoController.listar);
 router.post('/localizacao', LocalizacaoController.cadastrar); 
 router.patch('/localizacao/:loc_id', LocalizacaoController.editar); 
 router.delete('/localizacao/:loc_id', LocalizacaoController.apagar); 
+
+router.get('/equipamento', EquipamentoController.listar); 
+router.post('/equipamento',EquipamentoController.cadastrar); 
+router.patch('/equipamento/:equip_id', EquipamentoController.editar); 
+router.delete('/equipamento/:equip_id', EquipamentoController.apagar); 
+
+router.get('/parametro', ParametroController.listar); 
+router.post('/parametro',ParametroController.cadastrar); 
+router.patch('/parametro/:param_id', ParametroController.editar); 
+router.delete('/parametro/:param_id', ParametroController.apagar); 
+
+
 
 module.exports = router;
