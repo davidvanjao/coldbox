@@ -1,5 +1,8 @@
 const { json } = require('express'); 
 const db = require('../database/connection'); 
+const { validationResult } = require('express-validator');
+
+
 
 module.exports = {
     async listar(request, response) {
@@ -30,6 +33,14 @@ module.exports = {
 
     async cadastrar(request, response) {
         try {
+
+            const errors = validationResult(request);
+
+            if(!errors.isEmpty()) {
+                return response.status(400).json({ errors: errors.array()[0]['msg']});
+            }
+
+
             // parâmetros recebidos no corpo da requisição
             const { user_nome, user_senha, user_email, user_tel, nivel_id, user_priorid } = request.body;
 
@@ -52,6 +63,7 @@ module.exports = {
                 mensagem: 'Cadastro de usuário efetuado com sucesso.', 
                 dados: usu_id
             });
+
         } catch (error) {
             return response.status(500).json({
                 sucesso: false, 
@@ -118,6 +130,48 @@ module.exports = {
             return response.status(500).json({
                 sucesso: false,
                 mensagem: 'Erro na requisição.',
+                dados: error.message
+            });
+        }
+    },
+
+    async login(request, response) {
+        try {
+
+            const {user_email, user_senha} = request.body;
+
+            // instruções SQL
+            const sql = `select user_id, user_nome, user_tel, nivel_id, user_priorid from usuario where user_email = ? and user_senha = ?;`; 
+
+            const values = [user_email, user_senha];
+
+            //executa instruções SQL e armazena o resultado na variável usuários
+            const usuarios = await db.query(sql, values); 
+            const nItens = usuarios[0].length;
+
+            console.log(usuarios[0]);
+
+            if(nItens < 1) {
+
+                return response.status(403).json({
+                    sucesso: false, 
+                    mensagem: 'Login e/ou senha inválido.', 
+                    dados: null               
+                });
+
+            }
+
+            return response.status(200).json({
+                sucesso: true, 
+                mensagem: 'Login efetuado com sucesso.', 
+                dados: usuarios[0]            
+            });
+
+        } catch (error) {
+            //console.log(error);
+            return response.status(500).json({
+                sucesso: false, 
+                mensagem: 'Erro na requisição.', 
                 dados: error.message
             });
         }

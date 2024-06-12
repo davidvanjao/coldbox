@@ -1,5 +1,6 @@
 const express = require('express'); 
 const router = express.Router(); 
+const {body} = require('express-validator');
 
 //referência a controllers que serão utilizados nas rotas
 const UsuariosController = require('../controllers/usuarios'); 
@@ -12,9 +13,10 @@ const EquipamentoController = require('../controllers/equipamento');
 const ParametroController = require('../controllers/parametro'); 
 
 router.get('/usuarios', UsuariosController.listar); 
-router.post('/usuarios', UsuariosController.cadastrar); 
+router.post('/usuarios', body('user_email').isEmail().withMessage('Por favor, forneça um email válido'),  UsuariosController.cadastrar); 
 router.patch('/usuarios/:user_id', UsuariosController.editar); 
 router.delete('/usuarios/:user_id', UsuariosController.apagar); 
+router.post('/usuarios/login', UsuariosController.login); 
 
 router.get('/nivel_acesso', NivelAcessoController.listar); 
 router.post('/nivel_acesso', NivelAcessoController.cadastrar); 
